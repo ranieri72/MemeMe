@@ -8,12 +8,16 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     @IBOutlet var image: UIImageView!
     @IBOutlet var topLabel: UITextField!
     @IBOutlet var bottomLabel: UITextField!
     @IBOutlet var btnCamera: UIBarButtonItem!
+    @IBOutlet var navBar: UINavigationBar!
+    
+    var leftBarButtonItem: UIBarButtonItem!
+    var rightBarButtonItem: UIBarButtonItem!
     
     // MARK: viewController
     override func viewDidLoad() {
@@ -22,12 +26,23 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         btnCamera.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
         
         let memeTextAttributes:[NSAttributedString.Key:Any] = [
-            NSAttributedString.Key.strokeColor: UIColor.white,
-            NSAttributedString.Key.foregroundColor: UIColor.black,
-            NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-            NSAttributedString.Key.strokeWidth: 1.0]
+            NSAttributedString.Key.strokeColor: UIColor.black,
+            NSAttributedString.Key.foregroundColor: UIColor.white,
+            NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Bold", size: 35)!,
+            NSAttributedString.Key.strokeWidth: 3.0]
         topLabel.defaultTextAttributes = memeTextAttributes
         bottomLabel.defaultTextAttributes = memeTextAttributes
+        topLabel.textAlignment = .center
+        bottomLabel.textAlignment = .center
+        topLabel.delegate = self
+        bottomLabel.delegate = self
+        
+        leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(ViewController.btnShareAction))
+        rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .cancel, target: self, action: #selector(ViewController.btnCancelAction))
+        navigationItem.leftBarButtonItem = leftBarButtonItem
+        navigationItem.rightBarButtonItem = rightBarButtonItem
+        navBar.pushItem(navigationItem, animated: false)
+        enableShare(false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -40,10 +55,41 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         unsubscribeFromKeyboardNotifications()
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
+        return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if (textField.text?.hasPrefix("TOP"))! || (textField.text?.hasSuffix("BOTTOM"))! {
+            textField.text = ""
+        }
+    }
+    
+    func enableShare(_ isEnable: Bool) {
+        leftBarButtonItem.isEnabled = isEnable
+        rightBarButtonItem.isEnabled = isEnable
+        if !isEnable {
+            topLabel.text = "TOP"
+            bottomLabel.text = "BOTTOM"
+            image.image = UIImage()
+        }
+    }
+    
     // MARK: save
     func save() {
         let memedImage = generateMemedImage()
         _ = Meme(textTop: topLabel.text!, textBottom: bottomLabel.text!, originalImage: image.image!, memedImage: memedImage)
+        
+        let controller = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
+        
+        controller.completionWithItemsHandler = {(activityType: UIActivity.ActivityType?, completed: Bool, returnedItems: [Any]?, error: Error?) in
+            if completed {
+                self.enableShare(false)
+                return
+            }
+        }
+        self.present(controller, animated: true, completion: nil)
     }
     
     func generateMemedImage() -> UIImage {
@@ -62,6 +108,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     // MARK: button
+    @objc func btnShareAction() {
+        save()
+    }
+    
+    @objc func btnCancelAction() {
+        enableShare(false)
+    }
+    
     @IBAction func btnCameraAction(_ sender: UIBarButtonItem) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -80,6 +134,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let selectedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             image.image = selectedImage
+            enableShare(true)
         }
         picker.dismiss(animated: true, completion: nil)
     }

@@ -21,7 +21,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>O app precisa da câmera pra você tirar fotos e compartilhar</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>O app precisa de acesso a galeria pra você tirar compartilhar</string>
+	<string>O app precisa de acesso a galeria pra você escolher uma imagem e compartilhar</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>O app precisa de acesso a galeria pra você salvar suas imagens</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
