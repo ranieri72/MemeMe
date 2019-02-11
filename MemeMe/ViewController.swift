@@ -17,7 +17,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet var navBar: UINavigationBar!
     
     var leftBarButtonItem: UIBarButtonItem!
-    var rightBarButtonItem: UIBarButtonItem!
+    var isEditingBottonLabel = false
+    
+    let topText = "TOP"
+    let bottomText = "BOTTOM"
     
     // MARK: viewController
     override func viewDidLoad() {
@@ -38,7 +41,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         bottomLabel.delegate = self
         
         leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(ViewController.btnShareAction))
-        rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .cancel, target: self, action: #selector(ViewController.btnCancelAction))
+        let rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .cancel, target: self, action: #selector(ViewController.btnCancelAction))
         navigationItem.leftBarButtonItem = leftBarButtonItem
         navigationItem.rightBarButtonItem = rightBarButtonItem
         navBar.pushItem(navigationItem, animated: false)
@@ -57,21 +60,27 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         view.endEditing(true)
+        if bottomLabel.text!.isEmpty {
+            bottomLabel.text = bottomText
+        }
+        if topLabel.text!.isEmpty {
+            topLabel.text = topText
+        }
         return true
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        if (textField.text?.hasPrefix("TOP"))! || (textField.text?.hasSuffix("BOTTOM"))! {
+        isEditingBottonLabel = textField == bottomLabel
+        if (textField.text?.hasPrefix(topText))! || (textField.text?.hasSuffix(bottomText))! {
             textField.text = ""
         }
     }
     
     func enableShare(_ isEnable: Bool) {
         leftBarButtonItem.isEnabled = isEnable
-        rightBarButtonItem.isEnabled = isEnable
         if !isEnable {
-            topLabel.text = "TOP"
-            bottomLabel.text = "BOTTOM"
+            topLabel.text = topText
+            bottomLabel.text = bottomText
             image.image = UIImage()
         }
     }
@@ -155,7 +164,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @objc func keyboardWillShow(_ notification:Notification) {
-        view.frame.origin.y -= getKeyboardHeight(notification)
+        if isEditingBottonLabel {
+            view.frame.origin.y -= getKeyboardHeight(notification)
+        }
     }
     
     @objc func keyboardWillHide(_ notification:Notification) {
