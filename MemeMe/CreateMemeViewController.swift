@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class CreateMemeViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     @IBOutlet var image: UIImageView!
     @IBOutlet var topLabel: UITextField!
@@ -28,23 +28,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         btnCamera.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
         
-        let memeTextAttributes:[NSAttributedString.Key:Any] = [
-            NSAttributedString.Key.strokeColor: UIColor.black,
-            NSAttributedString.Key.foregroundColor: UIColor.white,
-            NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Bold", size: 35)!,
-            NSAttributedString.Key.strokeWidth: 3.0]
-        topLabel.defaultTextAttributes = memeTextAttributes
-        bottomLabel.defaultTextAttributes = memeTextAttributes
-        topLabel.textAlignment = .center
-        bottomLabel.textAlignment = .center
-        topLabel.delegate = self
-        bottomLabel.delegate = self
+        setStyle(to: topLabel)
+        setStyle(to: bottomLabel)
         
-        leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(ViewController.btnShareAction))
-        let rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .cancel, target: self, action: #selector(ViewController.btnCancelAction))
+        leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(CreateMemeViewController.btnShareAction))
+        let rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .cancel, target: self, action: #selector(CreateMemeViewController.btnCancelAction))
         navigationItem.leftBarButtonItem = leftBarButtonItem
         navigationItem.rightBarButtonItem = rightBarButtonItem
         navBar.pushItem(navigationItem, animated: false)
+        
         enableShare(false)
     }
     
@@ -58,14 +50,19 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         unsubscribeFromKeyboardNotifications()
     }
     
+    func setStyle(to textField: UITextField) {
+        let memeTextAttributes:[NSAttributedString.Key:Any] = [
+            NSAttributedString.Key.strokeColor: UIColor.black,
+            NSAttributedString.Key.foregroundColor: UIColor.white,
+            NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Bold", size: 35)!,
+            NSAttributedString.Key.strokeWidth: -2.0]
+        textField.defaultTextAttributes = memeTextAttributes
+        textField.textAlignment = .center
+        textField.delegate = self
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         view.endEditing(true)
-        if bottomLabel.text!.isEmpty {
-            bottomLabel.text = bottomText
-        }
-        if topLabel.text!.isEmpty {
-            topLabel.text = topText
-        }
         return true
     }
     
@@ -88,12 +85,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     // MARK: save
     func save() {
         let memedImage = generateMemedImage()
-        _ = Meme(textTop: topLabel.text!, textBottom: bottomLabel.text!, originalImage: image.image!, memedImage: memedImage)
-        
         let controller = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
         
         controller.completionWithItemsHandler = {(activityType: UIActivity.ActivityType?, completed: Bool, returnedItems: [Any]?, error: Error?) in
             if completed {
+                _ = Meme(textTop: self.topLabel.text!, textBottom: self.bottomLabel.text!, originalImage: self.image.image!, memedImage: memedImage)
                 self.enableShare(false)
                 return
             }
@@ -102,8 +98,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func generateMemedImage() -> UIImage {
-        navigationController?.isToolbarHidden = true
-        navigationController?.isNavigationBarHidden = true
+        hideToolbars(true)
         
         // Render view to an image
         UIGraphicsBeginImageContext(self.view.frame.size)
@@ -111,9 +106,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let memedImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         
-        navigationController?.isToolbarHidden = false
-        navigationController?.isNavigationBarHidden = false
+        hideToolbars(false)
         return memedImage
+    }
+    
+    func hideToolbars(_ hide: Bool) {
+        navigationController?.isToolbarHidden = hide
+        navigationController?.isNavigationBarHidden = hide
     }
     
     // MARK: button
@@ -125,17 +124,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         enableShare(false)
     }
     
-    @IBAction func btnCameraAction(_ sender: UIBarButtonItem) {
+    @IBAction func pickImageFrom(_ sender: UIBarButtonItem) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
-        imagePicker.sourceType = .camera
-        present(imagePicker, animated: true, completion: nil)
-    }
-    
-    @IBAction func btnGalleryAction(_ sender: UIBarButtonItem) {
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = .photoLibrary
+        imagePicker.sourceType = sender.tag == 0 ? .camera : .photoLibrary
         present(imagePicker, animated: true, completion: nil)
     }
     
