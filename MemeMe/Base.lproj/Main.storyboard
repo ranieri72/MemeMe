@@ -63,14 +63,14 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="ObT-lp-rFL">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="memeCollectionCell" id="ObT-lp-rFL" customClass="MemeCollectionViewCell" customModule="MemeMe" customModuleProvider="target">
                                         <rect key="frame" x="94" y="0.0" width="187" height="140"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                             <rect key="frame" x="0.0" y="0.0" width="187" height="140"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="V86-gv-B8R">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="collection_30x30" translatesAutoresizingMaskIntoConstraints="NO" id="V86-gv-B8R">
                                                     <rect key="frame" x="0.0" y="0.0" width="187" height="140"/>
                                                 </imageView>
                                             </subviews>
@@ -81,6 +81,9 @@
                                             <constraint firstItem="V86-gv-B8R" firstAttribute="top" secondItem="ObT-lp-rFL" secondAttribute="top" id="cvc-VM-dMv"/>
                                             <constraint firstItem="V86-gv-B8R" firstAttribute="leading" secondItem="ObT-lp-rFL" secondAttribute="leading" id="ezV-Hj-VMi"/>
                                         </constraints>
+                                        <connections>
+                                            <outlet property="imgMeme" destination="V86-gv-B8R" id="yfi-TG-ucI"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
@@ -118,52 +121,36 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="598"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="110" id="OTX-Ul-LEb">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="110"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="memeTableCell" textLabel="J9y-KC-tlX" detailTextLabel="LDE-ih-1IB" imageView="6Og-UA-1GV" style="IBUITableViewCellStyleSubtitle" id="d7W-bp-oOe">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="OTX-Ul-LEb" id="sG2-3m-p7R">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="109.5"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="d7W-bp-oOe" id="8CT-gW-lV8">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ESH-RP-izt">
-                                                    <rect key="frame" x="25" y="10" width="90" height="90"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="90" id="7kg-Gm-VNa"/>
-                                                        <constraint firstAttribute="height" constant="90" id="Fak-fE-QsO"/>
-                                                    </constraints>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="J9y-KC-tlX">
+                                                    <rect key="frame" x="74" y="5" width="33.5" height="20.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Detail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="LDE-ih-1IB">
+                                                    <rect key="frame" x="74" y="25.5" width="33" height="14.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="table_30x30" id="6Og-UA-1GV">
+                                                    <rect key="frame" x="15" y="0.0" width="44" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WEk-7l-kSm">
-                                                    <rect key="frame" x="125" y="80" width="225" height="20"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20" id="gvr-hn-pIk"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dQl-Iv-ZTE">
-                                                    <rect key="frame" x="125" y="10" width="225" height="20"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20" id="HwG-Bb-652"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstAttribute="trailingMargin" secondItem="dQl-Iv-ZTE" secondAttribute="trailing" constant="10" id="CMA-7e-dWA"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="WEk-7l-kSm" secondAttribute="trailing" constant="10" id="Shc-s9-BTD"/>
-                                                <constraint firstItem="dQl-Iv-ZTE" firstAttribute="leading" secondItem="ESH-RP-izt" secondAttribute="trailing" constant="10" id="ZaF-1x-GKZ"/>
-                                                <constraint firstItem="ESH-RP-izt" firstAttribute="leading" secondItem="sG2-3m-p7R" secondAttribute="leadingMargin" constant="10" id="dYO-sN-ySU"/>
-                                                <constraint firstItem="WEk-7l-kSm" firstAttribute="leading" secondItem="ESH-RP-izt" secondAttribute="trailing" constant="10" id="lGK-ZA-frD"/>
-                                                <constraint firstItem="dQl-Iv-ZTE" firstAttribute="top" secondItem="ESH-RP-izt" secondAttribute="top" id="nd2-hz-3pD"/>
-                                                <constraint firstItem="ESH-RP-izt" firstAttribute="centerY" secondItem="sG2-3m-p7R" secondAttribute="centerY" id="tkH-jN-IVz"/>
-                                                <constraint firstItem="WEk-7l-kSm" firstAttribute="bottom" secondItem="ESH-RP-izt" secondAttribute="bottom" id="y2R-ZJ-TlM"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
+                                <sections/>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -274,6 +261,10 @@
             <point key="canvasLocation" x="84" y="346"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="collection_30x30" width="60" height="61"/>
+        <image name="table_30x30" width="60" height="60"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="EOE-kb-7ZD"/>
     </inferredMetricsTieBreakers>

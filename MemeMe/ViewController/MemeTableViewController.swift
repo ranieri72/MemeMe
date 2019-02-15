@@ -9,7 +9,7 @@
 import UIKit
 
 class MemeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     @IBOutlet var tableView: UITableView!
     
     var memes = [Meme]()
@@ -29,6 +29,12 @@ class MemeTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        <#code#>
+        let cell = tableView.dequeueReusableCell(withIdentifier: "memeTableCell", for: indexPath)
+        
+        let meme = memes[indexPath.row]
+        cell.textLabel?.text = meme.textTop
+        cell.detailTextLabel?.text = meme.textBottom
+        cell.imageView?.image = meme.memedImage
+        return cell
     }
 }
