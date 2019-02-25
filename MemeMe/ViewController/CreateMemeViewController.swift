@@ -94,6 +94,7 @@ class CreateMemeViewController: UIViewController, UIImagePickerControllerDelegat
                 let appDelegate = object as! AppDelegate
                 appDelegate.memes.append(meme)
                 self.enableShare(false)
+                self.dismiss(animated: true, completion: nil)
                 return
             }
         }
@@ -125,6 +126,7 @@ class CreateMemeViewController: UIViewController, UIImagePickerControllerDelegat
     
     @objc func btnCancelAction() {
         enableShare(false)
+        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func pickImageFrom(_ sender: UIBarButtonItem) {

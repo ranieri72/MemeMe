@@ -12,16 +12,22 @@ class MemeTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @IBOutlet var tableView: UITableView!
     
-    var memes = [Meme]()
+    let segueIdentifier = "detailSegueFromTable"
+    var appDelegate: AppDelegate!
+    var memes: [Meme]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        memes = appDelegate.memes
+        appDelegate = UIApplication.shared.delegate as? AppDelegate
         
         tableView.dataSource = self
         tableView.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        memes = appDelegate.memes
+        tableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -36,5 +42,20 @@ class MemeTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.detailTextLabel?.text = meme.textBottom
         cell.imageView?.image = meme.memedImage
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let meme = memes[indexPath.row]
+        performSegue(withIdentifier: segueIdentifier, sender: meme)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == segueIdentifier {
+            let view = segue.destination as! MemeDetailViewController
+            if let meme = sender as? Meme {
+                let image = meme.memedImage
+                view.imageMeme = image
+            }
+        }
     }
 }
